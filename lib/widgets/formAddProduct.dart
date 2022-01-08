@@ -47,7 +47,7 @@ class _Titulo extends StatelessWidget {
         width: double.infinity,
         alignment: Alignment.center,
         height: 50,
-        child: Text(uiProvider.productNuevo == true ? 'Añadir Producto' : 'Actualizar Producto',
+        child: Text(uiProvider.productNuevo == true ? 'Añadir Producto' : 'Editar Producto',
           style: TextStyle(
               color: Colors.white,
               fontSize: 20
@@ -58,7 +58,6 @@ class _Titulo extends StatelessWidget {
     );
   }
 }
-
 
 class _CustomForm extends StatelessWidget {
 
@@ -150,12 +149,12 @@ class Botones {
         borderRadius: BorderRadius.circular(10)
       ),
       onPressed: (){
-        if(accion == 'none') Navigator.pop(context);
+        if(accion == 'none') Navigator.pop(context, false);
         if(!productFormProvider.isValidForm()) return;
 
         if(accion == 'add' && productFormProvider.isValidForm()) {
           productsService.saveOrCreateProduct(productFormProvider.product);
-          Navigator.pop(context);
+          Navigator.pop(context, false);
         }else{
           return;
         }
