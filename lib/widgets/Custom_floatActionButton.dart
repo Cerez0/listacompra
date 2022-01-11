@@ -16,7 +16,7 @@ class CustomFloatActionButton extends StatelessWidget {
     return FloatingActionButton(
       child: Icon(Icons.add),
       onPressed: (){
-
+        uiProvider.showDialog = true;
         productsService.selectedProduct = new Product(
           name: '',
           select: false,

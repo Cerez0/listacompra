@@ -1,5 +1,5 @@
 
-import 'package:cesta_compra/widgets/dialogDeleteItem.dart';
+import 'package:cesta_compra/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:cesta_compra/providers/providers.dart';
 import 'package:cesta_compra/widgets/widgets.dart';
@@ -109,13 +109,21 @@ class _ItemProduct extends StatelessWidget {
       confirmDismiss: (direction) async{
 
         if (direction == DismissDirection.startToEnd) {
+          uiProvider.showDialog = true;
           uiProvider.productNuevo = false;
           productsService.selectedProduct = productsService.products[index!];
           showDialog(barrierDismissible: false, context: context, builder: (BuildContext context) => FormAddProduct());
         };
 
         if (direction == DismissDirection.endToStart) {
-          showDialog(barrierDismissible: false, context: context, builder: (BuildContext context) => DialogDeleteItem(index));
+          showDialog(barrierDismissible: false, context: context, builder: (BuildContext context) => CustomDialog.customDialog(
+            item: index,
+            context: context,
+            titulo: 'Eliminar Producto',
+            contenido: '¿Quieres eliminar ${productsService.products[index!].name}?',
+            nombreBtn: 'Eliminar',
+            accionBtn: 'delete',
+          ));
         };
       },
       child: Column(

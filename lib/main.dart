@@ -1,7 +1,5 @@
 import 'package:cesta_compra/pages/home_page.dart';
 import 'package:cesta_compra/pages/pages.dart';
-import 'package:cesta_compra/providers/product_form_provider.dart';
-import 'package:cesta_compra/providers/product_service.dart';
 import 'package:cesta_compra/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -2,16 +2,21 @@ import 'package:cesta_compra/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DialogDeleteItem extends StatelessWidget {
-  int? index;
+class CustomDialog {
 
-  DialogDeleteItem(this.index);
+  static Dialog customDialog({
 
-  @override
-  Widget build(BuildContext context) {
+    int? item,
+    required BuildContext context,
+    required String titulo,
+    required String contenido,
+    required String nombreBtn,
+    required String accionBtn,
+
+}){
 
     final productsService = Provider.of<ProductsService>(context);
-    print(index);
+    final uiProvider = Provider.of<UiProvider>(context);
 
     return Dialog(
       shape: RoundedRectangleBorder(
@@ -22,14 +27,15 @@ class DialogDeleteItem extends StatelessWidget {
         height: 250,
         child: Column(
           children: [
-            _Titulo(),
+            _Titulo(titulo),
             Column(
               children: [
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   alignment: Alignment.center,
                   height: 130,
-                  child: Text('¿Seguro que quieres eliminar este producto?',
+                  child: Text(
+                    contenido,
                     style: TextStyle(
                       fontSize: 18,
 
@@ -40,27 +46,27 @@ class DialogDeleteItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+
                     Botones.boton(
                       context: context,
                       nombre: 'Cancelar',
                       accion: 'cancel',
                       productsService: productsService,
-                      index: index!,
+                      uiProvider: uiProvider,
+                      index: item,
                     ),
                     Botones.boton(
                       context: context,
-                      nombre: 'Eliminar',
-                      accion: 'delete',
+                      nombre: nombreBtn,
+                      accion: accionBtn,
                       productsService: productsService,
-                      index: index!,
+                      uiProvider: uiProvider,
+                      index: item,
                     ),
-
                   ],
                 ),
-
               ],
             ),
-
           ],
         ),
       ),
@@ -70,10 +76,12 @@ class DialogDeleteItem extends StatelessWidget {
 
 class _Titulo extends StatelessWidget {
 
+  String? titulo;
+
+  _Titulo(this.titulo);
+
   @override
   Widget build(BuildContext context) {
-
-    final uiProvider = Provider.of<UiProvider>(context);
 
     return Container(
       child: Container(
@@ -81,7 +89,7 @@ class _Titulo extends StatelessWidget {
         width: double.infinity,
         alignment: Alignment.center,
         height: 50,
-        child: Text('Eliminar Producto',
+        child: Text(titulo!,
           style: TextStyle(
               color: Colors.white,
               fontSize: 20
@@ -100,13 +108,12 @@ class Botones {
     required String nombre,
     required String accion,
     required ProductsService productsService,
-    required int index,
+    required UiProvider uiProvider,
+    int? index,
     IconData? icono,
-  }) {
+  }){
     return MaterialButton(
-      color: Theme
-          .of(context)
-          .primaryColor,
+      color: Theme.of(context).primaryColor,
       child: Text(
         nombre,
         style: TextStyle(
@@ -116,16 +123,39 @@ class Botones {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10)
       ),
-      onPressed: () {
-        if (accion == 'cancel') Navigator.pop(context, false);
+      onPressed: () async {
+        switch (accion) {
+          case 'cancel':
+            uiProvider.showDialog = false;
+            Navigator.pop(context, false);
 
-        if (accion == 'delete') {
-          productsService.deleteProduct(productsService.products[index]);
-          Navigator.pop(context, true);
-        } else {
-          return;
+            break;
+
+          case 'delete':
+
+            Navigator.pop(context, true);
+            uiProvider.showDialog = false;
+            await productsService.deleteProduct(productsService.products[index!]);
+
+
+            break;
+
+          case 'deleteAll':
+
+              for (var i = 0; i < productsService.products.length; i++) {
+
+              if(await productsService.products[i].select == true){
+               await productsService.deleteProduct(productsService.products[i]);
+               i--;
+              }
+
+            }
+            uiProvider.showDialog = false;
+            Navigator.pop(context);
+
+            break;
         }
-      },
+      }
     );
   }
 }

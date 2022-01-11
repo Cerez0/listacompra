@@ -78,6 +78,7 @@ class _CustomForm extends StatelessWidget {
             child: Column(
               children: [
                 TextFormField(
+                  autofocus: true,
                   initialValue: product.name,
                   onChanged: (value) => product.name = value,
                   keyboardType: TextInputType.name,
@@ -110,6 +111,7 @@ class _CustomForm extends StatelessWidget {
               accion: 'none',
               productFormProvider: productFormProvider,
               productsService: productService,
+              uiProvider: uiProvider,
             ),
             Botones.boton(
               context: context,
@@ -117,6 +119,7 @@ class _CustomForm extends StatelessWidget {
               accion: 'add',
               productFormProvider: productFormProvider,
               productsService: productService,
+              uiProvider: uiProvider,
             ),
 
           ],
@@ -135,6 +138,7 @@ class Botones {
     required String accion,
     required ProductFormProvider productFormProvider,
     required ProductsService productsService,
+    required UiProvider uiProvider,
     IconData? icono,
   }){
     return MaterialButton(
@@ -149,12 +153,17 @@ class Botones {
         borderRadius: BorderRadius.circular(10)
       ),
       onPressed: (){
-        if(accion == 'none') Navigator.pop(context, false);
+        if(accion == 'none') {
+          Navigator.pop(context, false);
+          uiProvider.showDialog = false;
+        }
         if(!productFormProvider.isValidForm()) return;
+
 
         if(accion == 'add' && productFormProvider.isValidForm()) {
           productsService.saveOrCreateProduct(productFormProvider.product);
           Navigator.pop(context, false);
+          uiProvider.showDialog = false;
         }else{
           return;
         }

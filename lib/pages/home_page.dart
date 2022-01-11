@@ -1,36 +1,97 @@
-import 'package:cesta_compra/pages/settings_page.dart';
-import 'package:cesta_compra/pages/listasCompra_page.dart';
-import 'package:cesta_compra/providers/providers.dart';
-import 'package:cesta_compra/widgets/Custom_floatActionButton.dart';
-import 'package:cesta_compra/widgets/custom_navigatorBar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cesta_compra/pages/pages.dart';
+import 'package:cesta_compra/providers/providers.dart';
+import 'package:cesta_compra/widgets/widgets.dart';
+import 'package:cesta_compra/widgets/custom_dialog.dart';
+
 
 class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
 
+    final productService = Provider.of<ProductsService>(context);
     final uiProvider = Provider.of<UiProvider>(context);
+    final currentIndex = uiProvider.selectedMenuOpt;
+
+
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de la Compra'),
+        title: currentIndex == 0 ? Text('Lista de la Compra') : Text('Ajustes de la Aplicacion'),
         centerTitle: true,
+        actions: [
+          Container(
+            width: 75,
+            child: currentIndex == 0
+              ? IconButton(
+              icon: Icon(Icons.library_add_check_sharp,size: 25),
+              onPressed: (){
+                _seleccionarTodos(productService);
+              },
+              )
+              : null,
+
+          ),
+        ],
+        leading: Container(
+          width: 75,
+          child:  currentIndex == 0
+            ? IconButton(
+            icon: Icon(Icons.delete_sweep, size: 25),
+            onPressed: (){
+              _eliminarTodos(productService, context);
+            },
+          )
+          : null,
+        ),
+
       ),
       body: _HomePageBody(),
-      floatingActionButton: uiProvider.selectedMenuOpt == 0 ? CustomFloatActionButton() : null,
+      floatingActionButton: (uiProvider.selectedMenuOpt == 0 && uiProvider.showDialog == false) ? CustomFloatActionButton() : null ,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CustomNavigatorBar()
-
-
+      bottomNavigationBar: CustomNavigatorBar(),
     );
+  }
+
+  _seleccionarTodos (ProductsService productService){
+
+    int seleccionados = productService.products.indexWhere((element) => element.select == true);
+
+    if(seleccionados == -1) { // marca todos
+      for (var i = 0; i < productService.products.length; i++) {
+        if (productService.products[i].select == false) {
+          productService.updateSelected(true, i);
+          productService.updateProduct(productService.products[i]);
+        }
+      }
+    }else{ // Desmarca todos
+
+      for (var i = 0; i < productService.products.length; i++) {
+        if (productService.products[i].select == true) {
+          productService.updateSelected(false, i);
+          productService.updateProduct(productService.products[i]);
+        }
+      }
+
+    }
+  }
+
+  _eliminarTodos (ProductsService productService, BuildContext context){
+
+  showDialog(context: context, builder: (BuildContext context) => CustomDialog.customDialog(
+      context: context,
+      titulo: 'Eliminar',
+      contenido: '¿Quieres eliminar los productos tachados en la lista?',
+      nombreBtn: 'Eliminar',
+      accionBtn: 'deleteAll'),
+  );
+
   }
 }
 
 class _HomePageBody extends StatelessWidget {
-
-
 
   @override
   Widget build(BuildContext context) {

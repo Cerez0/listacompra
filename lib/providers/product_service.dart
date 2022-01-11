@@ -1,12 +1,15 @@
 
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:cesta_compra/Models/product_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:cesta_compra/Models/product_model.dart';
+import 'package:cesta_compra/private_data/private_data.dart';
+
 
 class ProductsService extends ChangeNotifier{
 
-  final String _baseUrl = 'nuestralistacompra-default-rtdb.europe-west1.firebasedatabase.app';
+  final String _baseUrl = PrivateData().urlDataBase(); //TODO: Url privada de mi base de datos(FireBase)
   final List<Product> products = [];
   Product? selectedProduct;
   bool isLoading = true;
@@ -18,10 +21,12 @@ class ProductsService extends ChangeNotifier{
 
 
   updateSelected(bool value, int index){
-    print(value);
-    print(index);
+    //print(value);
+    //print(index);
     this.products[index].select = value;
     notifyListeners();
+
+    //print('Producto Actualizado ${products[index].name}');
   }
 
   Future <void> refreshList () async{
@@ -96,7 +101,7 @@ class ProductsService extends ChangeNotifier{
 
     final index = this.products.indexWhere((element) => element.id == product.id);
     this.products[index] = product;
-    //print(decodedData);
+    //print('Producto Actualizado ${product.name}');
 
     return product.id!;
 
@@ -118,7 +123,6 @@ class ProductsService extends ChangeNotifier{
     return product.id!;
 
   }
-
 
 
 }
