@@ -1,8 +1,8 @@
 
-import 'package:cesta_compra/providers/providers.dart';
-import 'package:cesta_compra/ui/inputs_decorations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cesta_compra/providers/providers.dart';
+import 'package:cesta_compra/ui/inputs_decorations.dart';
 
 class FormAddProduct extends StatelessWidget {
 
@@ -50,7 +50,8 @@ class _Titulo extends StatelessWidget {
         child: Text(uiProvider.productNuevo == true ? 'Añadir Producto' : 'Editar Producto',
           style: TextStyle(
               color: Colors.white,
-              fontSize: 20
+              fontSize: 20,
+            fontFamily: 'assets/fonts/Luxurious.ttf'
 
           ),
         ),
@@ -83,10 +84,14 @@ class _CustomForm extends StatelessWidget {
                   onChanged: (value) => product.name = value,
                   keyboardType: TextInputType.name,
                   textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecorations.authInputDecoration(
+                  decoration: InputDecorations.inputDecoration(
+                    context: context,
                     hintText: 'Leche',
                     labelText: 'Producto',
-                    icono: Icons.shopping_basket_outlined
+                    icono: Icons.shopping_basket_outlined,
+                  ),
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    fontWeight: FontWeight.normal
                   ),
                   validator: (value){
                     if(value!.length >= 1){
@@ -146,7 +151,7 @@ class Botones {
       child: Text(
         nombre,
         style: TextStyle(
-          color: Colors.white
+          color: Colors.white,
         ),
       ),
       shape: RoundedRectangleBorder(

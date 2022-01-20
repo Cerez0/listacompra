@@ -1,9 +1,8 @@
-import 'package:cesta_compra/Models/product_model.dart';
-import 'package:cesta_compra/providers/product_service.dart';
-import 'package:cesta_compra/providers/providers.dart';
-import 'package:cesta_compra/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cesta_compra/Models/product_model.dart';
+import 'package:cesta_compra/providers/providers.dart';
+import 'package:cesta_compra/widgets/widgets.dart';
 
 class CustomFloatActionButton extends StatelessWidget {
 

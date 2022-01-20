@@ -1,22 +1,26 @@
-import 'package:cesta_compra/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cesta_compra/providers/providers.dart';
 
 class CustomDialog {
 
   static Dialog customDialog({
 
     int? item,
+    double? height,
+    bool btnCancel = true,
+    AppTheme? appTheme,
     required BuildContext context,
     required String titulo,
-    required String contenido,
     required String nombreBtn,
     required String accionBtn,
+    required Widget child,
 
 }){
 
     final productsService = Provider.of<ProductsService>(context);
     final uiProvider = Provider.of<UiProvider>(context);
+    final appTheme = Provider.of<AppTheme>(context);
 
     return Dialog(
       shape: RoundedRectangleBorder(
@@ -24,43 +28,36 @@ class CustomDialog {
       ),
       child: Container(
         width: double.infinity,
-        height: 250,
+        height: height == null ? 200 : height,
         child: Column(
           children: [
             _Titulo(titulo),
             Column(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   alignment: Alignment.center,
-                  height: 130,
-                  child: Text(
-                    contenido,
-                    style: TextStyle(
-                      fontSize: 18,
-
-                    ),
-                  ),
+                  child: child
                 ),
-                Divider(color: Theme.of(context).primaryColor,),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: btnCancel == true ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.center,
                   children: [
 
-                    Botones.boton(
+                    btnCancel == true ? Botones.boton(
                       context: context,
                       nombre: 'Cancelar',
                       accion: 'cancel',
                       productsService: productsService,
                       uiProvider: uiProvider,
                       index: item,
-                    ),
+                    ) : Container(),
                     Botones.boton(
                       context: context,
                       nombre: nombreBtn,
                       accion: accionBtn,
                       productsService: productsService,
                       uiProvider: uiProvider,
+                      appTheme: appTheme,
                       index: item,
                     ),
                   ],
@@ -70,6 +67,8 @@ class CustomDialog {
           ],
         ),
       ),
+
+
     );
   }
 }
@@ -108,7 +107,8 @@ class Botones {
     required String nombre,
     required String accion,
     required ProductsService productsService,
-    required UiProvider uiProvider,
+    UiProvider? uiProvider,
+    AppTheme? appTheme,
     int? index,
     IconData? icono,
   }){
@@ -126,7 +126,7 @@ class Botones {
       onPressed: () async {
         switch (accion) {
           case 'cancel':
-            uiProvider.showDialog = false;
+            uiProvider!.showDialog = false;
             Navigator.pop(context, false);
 
             break;
@@ -134,7 +134,7 @@ class Botones {
           case 'delete':
 
             Navigator.pop(context, true);
-            uiProvider.showDialog = false;
+            uiProvider!.showDialog = false;
             await productsService.deleteProduct(productsService.products[index!]);
 
 
@@ -150,9 +150,14 @@ class Botones {
               }
 
             }
-            uiProvider.showDialog = false;
+            uiProvider!.showDialog = false;
             Navigator.pop(context);
 
+            break;
+
+          case 'colorSelected':
+            appTheme!.isCustomTheme = true;
+            Navigator.pop(context);
             break;
         }
       }

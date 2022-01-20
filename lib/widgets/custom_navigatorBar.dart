@@ -1,6 +1,6 @@
-import 'package:cesta_compra/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cesta_compra/providers/providers.dart';
 
 class CustomNavigatorBar extends StatelessWidget {
 

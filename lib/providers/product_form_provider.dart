@@ -1,5 +1,5 @@
-import 'package:cesta_compra/Models/product_model.dart';
 import 'package:flutter/material.dart';
+import 'package:cesta_compra/Models/product_model.dart';
 
 class ProductFormProvider extends ChangeNotifier {
 

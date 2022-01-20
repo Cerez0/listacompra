@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: currentIndex == 0 ? Text('Lista de la Compra') : Text('Ajustes de la Aplicacion'),
+        title: currentIndex == 0 ? Text('Lista de la Compra') : Text('AJUSTES'),
         centerTitle: true,
         actions: [
           Container(
@@ -80,10 +80,19 @@ class HomePage extends StatelessWidget {
 
   _eliminarTodos (ProductsService productService, BuildContext context){
 
-  showDialog(context: context, builder: (BuildContext context) => CustomDialog.customDialog(
+  showDialog(barrierDismissible: false, context: context, builder: (BuildContext context) => CustomDialog.customDialog(
       context: context,
       titulo: 'Eliminar',
-      contenido: '¿Quieres eliminar los productos tachados en la lista?',
+      child: Container(
+        alignment: Alignment.center,
+        height: 75,
+
+        child: Text(
+          '¿Quieres eliminar todos los tachados de la lista?',
+          style: Theme.of(context).textTheme.bodyText1,
+          textAlign: TextAlign.center,
+        ),
+      ),
       nombreBtn: 'Eliminar',
       accionBtn: 'deleteAll'),
   );

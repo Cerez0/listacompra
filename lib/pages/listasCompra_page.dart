@@ -1,9 +1,9 @@
 
-import 'package:cesta_compra/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cesta_compra/widgets/custom_dialog.dart';
 import 'package:cesta_compra/providers/providers.dart';
 import 'package:cesta_compra/widgets/widgets.dart';
-import 'package:provider/provider.dart';
 
 class ListasCompraPage extends StatelessWidget {
 
@@ -18,16 +18,17 @@ class ListasCompraPage extends StatelessWidget {
       return Center(child: Text(
         'Añade Productos a la lista',
         style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.deepOrange
-        ),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          ),
         ),
       );
 
     }else {
       return RefreshIndicator(
         onRefresh: () =>  productsService.refreshList(),
+        color: Theme.of(context).primaryColor,
         child: ListView.builder(
           itemCount: productsService.products.length,
           itemBuilder: (BuildContext context, int index) => GestureDetector(
@@ -120,7 +121,14 @@ class _ItemProduct extends StatelessWidget {
             item: index,
             context: context,
             titulo: 'Eliminar Producto',
-            contenido: '¿Quieres eliminar ${productsService.products[index!].name}?',
+            child: Container(
+              alignment: Alignment.center,
+              height: 75,
+              child: Text(
+                '¿Quieres eliminar ${productsService.products[index!].name}?',
+                style: Theme.of(context).textTheme.bodyText1
+              ),
+            ),
             nombreBtn: 'Eliminar',
             accionBtn: 'delete',
           ));
@@ -140,12 +148,10 @@ class _ItemProduct extends StatelessWidget {
                 Container(
                   child: Text(
                     productsService.products[index!].name,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: productsService.products[index!].select == true ? Colors.red : Colors.black,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                      color: productsService.products[index!].select == true ? Colors.red : Theme.of(context).textTheme.bodyText1?.color,
                       decoration: productsService.products[index!].select == true ? TextDecoration.lineThrough : TextDecoration.none,
-                      decorationColor: Colors.red,
-                    ),
+                    )
                   ),
                 ),
 
@@ -156,6 +162,7 @@ class _ItemProduct extends StatelessWidget {
 
                       Checkbox(
                           value: productsService.products[index!].select,
+                          activeColor: Theme.of(context).primaryColor,
                           onChanged:(value) {
                             productsService.updateSelected(value!, index!);
                             productsService.updateProduct(productsService.products[index!]);
@@ -167,7 +174,7 @@ class _ItemProduct extends StatelessWidget {
             ),
           ),
 
-          Divider(color: Theme.of(context).primaryColor,)
+          Divider()
         ],
 
       ),

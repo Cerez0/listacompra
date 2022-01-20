@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 
 class UiProvider extends ChangeNotifier{
 
-  int _selectedMenuOpt = 0;
+  int _selectedMenuOpt = 0; //TODO: Poner a 0
   bool _select = false;
   bool _showDialog = false;
+  bool _dartMode = false;
+  Color _pickColor = Color(0xffff5400);
   bool productNuevo = true;
-
-
 
   //TODO selct NavigatorBar
 
