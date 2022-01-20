@@ -1,85 +1,12 @@
 
 
+import 'package:cesta_compra/share_preferences/preferences.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme with ChangeNotifier {
 
-  static const Color primaryDefault = Color(0xffff5400);
-
-
-  bool _isDefaultTheme = true;
-  bool _isDarkTheme = false;
-  bool _isCustomTheme = false;
-  Color _customColor = Color(0xffff5400);
-
+  static const Color primaryDefault = Color(4294923520);
   ThemeData _currentTheme = ThemeData.light();
-  bool get isDarkTheme => this._isDarkTheme;
-  bool get isCustomTheme => this._isCustomTheme;
-  Color get customColor => this._customColor;
-  ThemeData get currentTheme => this._currentTheme;
-
-
-  set isDarkTheme(bool value){
-    //_isCustomTheme = false;
-    _isDarkTheme = value;
-
-    if ( value ) {
-
-      _currentTheme = darkTheme();
-
-    }else{
-
-      if (_isDefaultTheme){
-
-        _currentTheme = defaultTheme();
-
-      }else{
-
-        _currentTheme = customTheme();
-      }
-
-    }
-
-    notifyListeners();
-  }
-
-  set isCustomTheme(bool value){
-    _isCustomTheme = value;
-    _isDarkTheme = false;
-
-    if ( value ) {
-
-      _currentTheme = customTheme();
-      _isDefaultTheme = false;
-
-    }else{
-
-      _currentTheme = defaultTheme();
-      _isDefaultTheme = true;
-
-    }
-
-    notifyListeners();
-
-  }
-
-  set customColor ( Color value ) {
-
-    //print(value);
-    if ( _isCustomTheme  ) {
-
-      _customColor = value;
-      notifyListeners();
-
-
-    } else {
-
-      _customColor = primaryDefault;
-
-    }
-    notifyListeners();
-
-  }
 
   //TODO: Switch Selected Theme
 
@@ -88,26 +15,105 @@ class AppTheme with ChangeNotifier {
     switch( theme ){
 
       case 1:
-        _isDarkTheme = false;
-        _isCustomTheme = false;
+        Preferences.isDarkTheme = false;
+        Preferences.isCustomTheme = false;
         _currentTheme = defaultTheme();
         break;
 
       case 2:
-        _isDarkTheme = true;
-        _isCustomTheme = false;
+        Preferences.isDarkTheme = true;
+        Preferences.isCustomTheme = false;
         _currentTheme = darkTheme();
         break;
 
       case 3:
-        _isDarkTheme = false;
-        _isCustomTheme = true;
+        Preferences.isDarkTheme = false;
+        Preferences.isCustomTheme = true;
         _currentTheme = customTheme();
         break;
 
     }
 
   }
+
+  // Getters
+  bool get isDarkTheme => Preferences.isDarkTheme;
+  bool get isCustomTheme => Preferences.isCustomTheme;
+  int get customColor => Preferences.customColor;
+  ThemeData get currentTheme => this._currentTheme;
+
+ // Setters
+  set isDarkTheme( bool value ){
+    Preferences.isDarkTheme = value;
+
+    if ( value ) {
+
+      _currentTheme = darkTheme();
+      Preferences.theme = 2;
+      print('DarkTheme ${Preferences.isDarkTheme}: ${Preferences.theme}');
+
+    }else{
+
+      if (Preferences.isDefaultTheme){
+
+        _currentTheme = defaultTheme();
+        Preferences.theme = 1;
+        print('DarkTheme ${Preferences.isDarkTheme}: ${Preferences.theme}');
+
+      }else{
+
+        _currentTheme = customTheme();
+        Preferences.theme = 3;
+        print('DarkTheme ON, CustomTheme ON: ${Preferences.theme}');
+      }
+
+    }
+
+    notifyListeners();
+  }
+
+  set isCustomTheme( bool value ){
+    Preferences.isCustomTheme = value;
+    Preferences.isDarkTheme = false;
+
+    if ( value ) {
+
+      _currentTheme = customTheme();
+      Preferences.isDefaultTheme = false;
+      Preferences.theme = 3;
+      print('CustomTheme ${Preferences.isCustomTheme}: ${Preferences.theme}');
+
+    }else{
+
+      _currentTheme = defaultTheme();
+      Preferences.isDefaultTheme = true;
+      Preferences.theme = 1;
+      print('CustomTheme ${Preferences.isCustomTheme}: ${Preferences.theme}');
+
+    }
+
+    notifyListeners();
+
+  }
+
+  set customColor ( int value ) {
+    //print(value);
+    if ( Preferences.isCustomTheme  ) {
+
+      Preferences.customColor = value;
+      notifyListeners();
+
+
+    } else {
+
+      Preferences.customColor = primaryDefault.value;
+
+    }
+    notifyListeners();
+
+  }
+
+
 
   //TODO: Config Themes!
 
@@ -130,37 +136,38 @@ class AppTheme with ChangeNotifier {
 
   ThemeData darkTheme() {
     return ThemeData.dark().copyWith(
-      appBarTheme: AppBarTheme(color: _isDefaultTheme ? primaryDefault : _customColor),
-      dividerColor: _isDefaultTheme ? primaryDefault : _customColor,
-      primaryColor: _isDefaultTheme ? primaryDefault : _customColor,
+      appBarTheme: AppBarTheme(color: Preferences.isDefaultTheme ? primaryDefault : Color(Preferences.customColor)),
+      dividerColor: Preferences.isDefaultTheme ? primaryDefault : Color(Preferences.customColor),
+      primaryColor: Preferences.isDefaultTheme ? primaryDefault : Color(Preferences.customColor),
       textTheme: TextTheme(
           bodyText1: TextStyle(
               color: Colors.white,
               fontFamily: 'Luxurious',
               fontSize: 18,
               fontWeight: FontWeight.bold)),
-      floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: _isDefaultTheme ? primaryDefault : _customColor),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(selectedItemColor: _isDefaultTheme ? primaryDefault : _customColor),
-      progressIndicatorTheme: ProgressIndicatorThemeData(color: _isDefaultTheme ? primaryDefault : _customColor),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: Preferences.isDefaultTheme ? primaryDefault : Color(Preferences.customColor)),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(selectedItemColor: Preferences.isDefaultTheme ? primaryDefault : Color(Preferences.customColor)),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: Preferences.isDefaultTheme ? primaryDefault : Color(Preferences.customColor)),
     );
   }
 
   ThemeData customTheme() {
     return ThemeData.light().copyWith(
-      appBarTheme: AppBarTheme(color: _customColor),
-      dividerColor: _customColor,
-      primaryColor: _customColor,
+      appBarTheme: AppBarTheme(color: Color(Preferences.customColor)),
+      dividerColor: Color(Preferences.customColor),
+      primaryColor: Color(Preferences.customColor),
       textTheme: TextTheme(
           bodyText1: TextStyle(
               color: Colors.black,
               fontFamily: 'Luxurious',
               fontSize: 18,
               fontWeight: FontWeight.bold)),
-      floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: _customColor),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(selectedItemColor: _customColor),
-      progressIndicatorTheme: ProgressIndicatorThemeData(color: _isDefaultTheme ? primaryDefault : _customColor),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: Color(Preferences.customColor)),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(selectedItemColor: Color(Preferences.customColor)),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: Preferences.isDefaultTheme ? primaryDefault : Color(Preferences.customColor)),
     );
   }
+
 }
 
 

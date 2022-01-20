@@ -1,3 +1,4 @@
+import 'package:cesta_compra/share_preferences/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cesta_compra/providers/providers.dart';
@@ -187,8 +188,10 @@ class ColorApp extends StatelessWidget {
             child: ColorPicker(
                 labelTypes: [],
                 enableAlpha: false,
-                pickerColor: appTheme.customColor,
-                onColorChanged: (color) => appTheme.customColor = color
+                pickerColor: Color(Preferences.customColor),
+                onColorChanged: (color) {
+                  Preferences.customColor = color.value;
+                }
             ),
           ),
         ),
